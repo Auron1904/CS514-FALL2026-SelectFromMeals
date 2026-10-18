@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Meal #{{ meal.meal_id }}{% endblock %}
+
+{% block content %}
+<h1 class="h3">{{ meal.meal_type|capitalize }} on {{ meal.meal_date }} for {{ meal.username }}</h1>
+
+<table class="table table-striped table-sm mt-3">
+  <thead>
+    <tr>
+      <th>Food</th>
+      <th class="text-end">Grams</th>
+      <th class="text-end">Calories</th>
+      <th class="text-end">Protein (g)</th>
+      <th class="text-end">Carbs (g)</th>
+      <th class="text-end">Fat (g)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in meal.entries %}
+    <tr>
+      <td>{{ e.name }}</td>
+      <td class="text-end">{{ "%.0f"|format(e.quantity_g) }}</td>
+      <td class="text-end">{{ "%.0f"|format(e.calories) }}</td>
+      <td class="text-end">{{ "%.1f"|format(e.protein_g) }}</td>
+      <td class="text-end">{{ "%.1f"|format(e.carbs_g) }}</td>
+      <td class="text-end">{{ "%.1f"|format(e.fat_g) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr class="fw-bold">
+      <td colspan="2">Total</td>
+      <td class="text-end">{{ "%.0f"|format(meal.totals.calories) }}</td>
+      <td class="text-end">{{ "%.1f"|format(meal.totals.protein_g) }}</td>
+      <td class="text-end">{{ "%.1f"|format(meal.totals.carbs_g) }}</td>
+      <td class="text-end">{{ "%.1f"|format(meal.totals.fat_g) }}</td>
+    </tr>
+  </tfoot>
+</table>
+
+<a href="{{ url_for('meals.new_meal') }}" class="btn btn-primary">Log another meal</a>
+<a href="{{ url_for('dashboard.day_view', user_id=meal.user_id, date=meal.meal_date) }}"
+   class="btn btn-outline-secondary">See this whole day</a>
+{% endblock %}
