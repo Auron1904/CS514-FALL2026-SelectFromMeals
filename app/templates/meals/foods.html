@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Search foods{% endblock %}
+
+{% block content %}
+<h1>Search foods</h1>
+
+<form method="get" action="{{ url_for('meals.food_search') }}" class="row g-2 mb-4">
+  <div class="col-sm-8 col-md-6">
+    <input type="text" name="q" value="{{ term }}" class="form-control"
+           placeholder="Try chicken, rice, banana..." autofocus>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+</form>
+
+{% if term %}
+  {% if foods %}
+    <p class="text-muted">Showing {{ foods|length }} result(s) for "{{ term }}". Values are per 100 g.</p>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Food</th>
+          <th class="text-end">Calories</th>
+          <th class="text-end">Protein (g)</th>
+          <th class="text-end">Carbs (g)</th>
+          <th class="text-end">Fat (g)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for food in foods %}
+        <tr>
+          <td>{{ food.name }}</td>
+          <td class="text-end">{{ "%.0f"|format(food.calories_per_100g) }}</td>
+          <td class="text-end">{{ "%.1f"|format(food.protein_g) }}</td>
+          <td class="text-end">{{ "%.1f"|format(food.carbs_g) }}</td>
+          <td class="text-end">{{ "%.1f"|format(food.fat_g) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No foods found for "{{ term }}".</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

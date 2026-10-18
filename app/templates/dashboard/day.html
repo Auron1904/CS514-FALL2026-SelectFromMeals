@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Day view{% endblock %}
+
+{% block content %}
+<h1>Day view</h1>
+
+<form method="get" class="row g-2 mb-4">
+  <div class="col-sm-4 col-md-3">
+    <select class="form-select" name="user_id">
+      {% for user in users %}
+      <option value="{{ user.user_id }}" {% if user.user_id == user_id %}selected{% endif %}>
+        {{ user.username }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-sm-4 col-md-3">
+    <input type="date" class="form-control" name="date" value="{{ day }}">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Show</button>
+  </div>
+</form>
+
+{% if totals %}
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card text-center"><div class="card-body">
+        <div class="display-6">{{ "%.0f"|format(totals.calories) }}</div>
+        <div class="text-muted">Calories</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card text-center"><div class="card-body">
+        <div class="display-6">{{ "%.1f"|format(totals.protein_g) }} g</div>
+        <div class="text-muted">Protein</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card text-center"><div class="card-body">
+        <div class="display-6">{{ "%.1f"|format(totals.carbs_g) }} g</div>
+        <div class="text-muted">Carbs</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card text-center"><div class="card-body">
+        <div class="display-6">{{ "%.1f"|format(totals.fat_g) }} g</div>
+        <div class="text-muted">Fat</div>
+      </div></div>
+    </div>
+  </div>
+
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Meal</th>
+        <th class="text-end">Foods</th>
+        <th class="text-end">Calories</th>
+        <th class="text-end">Protein (g)</th>
+        <th class="text-end">Carbs (g)</th>
+        <th class="text-end">Fat (g)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for meal in meals %}
+      <tr>
+        <td><a href="{{ url_for('meals.meal_detail', meal_id=meal.meal_id) }}">{{ meal.meal_type|capitalize }}</a></td>
+        <td class="text-end">{{ meal.item_count }}</td>
+        <td class="text-end">{{ "%.0f"|format(meal.calories) }}</td>
+        <td class="text-end">{{ "%.1f"|format(meal.protein_g) }}</td>
+        <td class="text-end">{{ "%.1f"|format(meal.carbs_g) }}</td>
+        <td class="text-end">{{ "%.1f"|format(meal.fat_g) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No meals logged for this day.
+     <a href="{{ url_for('meals.new_meal') }}">Log a meal</a></p>
+{% endif %}
+{% endblock %}

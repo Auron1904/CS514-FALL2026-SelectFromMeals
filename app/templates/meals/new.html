@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Log a meal{% endblock %}
+
+{% block content %}
+<h1>Log a meal</h1>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="post">
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label" for="user_id">Who ate?</label>
+      <select class="form-select" id="user_id" name="user_id">
+        {% for user in users %}
+        <option value="{{ user.user_id }}" {% if user.user_id|string == form.user_id %}selected{% endif %}>
+          {{ user.username }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="meal_date">Date</label>
+      <input type="date" class="form-control" id="meal_date" name="meal_date" value="{{ form.meal_date }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="meal_type">Meal</label>
+      <select class="form-select" id="meal_type" name="meal_type">
+        {% for t in meal_types %}
+        <option value="{{ t }}" {% if t == form.meal_type %}selected{% endif %}>{{ t|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <h5>Foods</h5>
+  <p class="text-muted">Start typing a food name and pick it from the list. Leave unused rows blank.</p>
+
+  {% for row in form.rows %}
+  <div class="row g-2 mb-2">
+    <div class="col-md-8">
+      <input type="text" name="food_name" list="food-list" class="form-control"
+             placeholder="Food" value="{{ row.name }}">
+    </div>
+    <div class="col-md-3">
+      <input type="number" name="grams" class="form-control" placeholder="Grams"
+             min="0.1" step="any" value="{{ row.grams }}">
+    </div>
+  </div>
+  {% endfor %}
+
+  <datalist id="food-list">
+    {% for name in food_names %}<option value="{{ name }}">{% endfor %}
+  </datalist>
+
+  <button type="submit" class="btn btn-primary mt-3">Save meal</button>
+</form>
+{% endblock %}
